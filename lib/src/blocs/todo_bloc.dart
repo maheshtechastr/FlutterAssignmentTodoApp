@@ -8,7 +8,7 @@ class TodosBloc {
   final _repository = Repository();
   final _todosFetcher = PublishSubject<Result>();
 
-  Observable<Result> get allMovies => _todosFetcher.stream;
+  Observable<Result> get allTodos => _todosFetcher.stream;
 
   fetchAllTodos() async {
     Result itemModel = await _repository.fetchAllTodo();
