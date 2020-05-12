@@ -27,21 +27,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-class MyHelloWorld extends StatelessWidget{
-  String _title;
-  MyHelloWorld(this._title);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_title),
-      ),
-      body: Center(
-          child: Text("Hello World")
-      ),
-    );
-  }
-
-}
