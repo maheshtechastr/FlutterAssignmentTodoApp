@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:todoflutterapp/src/blocs/todo_bloc.dart';
 import 'package:todoflutterapp/src/models/Todo.dart';
 import 'package:todoflutterapp/src/models/result.dart';
+import 'package:todoflutterapp/src/utils/util.dart';
 
 class TodoList extends StatefulWidget {
   @override
@@ -38,16 +39,30 @@ class TodoListState extends State<TodoList> {
       ),
       body: StreamBuilder(
         stream: bloc.allTodos,
-        builder: (context, AsyncSnapshot<Result> snapshot) {
-          print(snapshot.hasError.toString());
-          if (snapshot.hasData) {
-            return buildList(snapshot);
-          } else if (snapshot.hasError) {
-            return Column( children: <Widget>[
-              Text("Something went wrong"),
-              Text("Give it another try"),
-              Text("RELOAD"),
-            ]);
+        builder: (context, AsyncSnapshot<Result> response) {
+          if (response.hasData) {
+            return buildList(response);
+          } else if (response.hasError) {
+            return Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                  Text("Something went wrong"),
+                  Text("Give it another try"),
+                  RaisedButton(
+                    color: Colors.white,
+                    elevation: 0,
+                    child: Text(
+                      "RELOAD",
+                      style: TextStyle(color: Colors.cyan),
+                    ),
+                    onPressed: () {
+                      print("Reload clicked");
+                      bloc.fetchAllTodos();
+                    },
+                  ),
+                ]));
           }
           return Center(child: CircularProgressIndicator());
         },
@@ -55,18 +70,16 @@ class TodoListState extends State<TodoList> {
     );
   }
 
-  Widget buildList(AsyncSnapshot<Result> snapshot) {
+  Widget buildList(AsyncSnapshot<Result> response) {
     return ListView.builder(
-      itemCount: snapshot.data.todos.length,
+      itemCount: response.data.todos.length,
       itemBuilder: (BuildContext context, int index) {
-        //return Text(snapshot.data.todos[index].title);
         return Container(
-            padding: EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 10),
+            padding: EdgeInsets.all(10.0),
             decoration: BoxDecoration(
-              //                    <-- BoxDecoration
               border: Border(bottom: BorderSide(width: 1, color: Colors.grey)),
             ),
-            child: ListItem(snapshot.data.todos[index]));
+            child: ListItem(todo: response.data.todos[index]));
       },
     );
   }
@@ -75,7 +88,7 @@ class TodoListState extends State<TodoList> {
 class ListItem extends StatelessWidget {
   final Todo todo;
 
-  ListItem(this.todo);
+  ListItem({Key key, this.todo}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -109,18 +122,11 @@ class ListItem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      "Status: " + _getString(todo),
+                      "Status: " + Util().getString(todo.isCompleted),
                       textScaleFactor: 1.2,
                       textAlign: TextAlign.left,
                     )
                   ])))
     ]);
-  }
-
-  String _getString(Todo todo) {
-    if (todo.isCompleted)
-      return "Completed";
-    else
-      return "Not Completed";
   }
 }
