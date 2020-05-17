@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:todoflutterapp/src/blocs/todo_bloc.dart';
-import 'package:todoflutterapp/src/models/Todo.dart';
+import 'package:todoflutterapp/src/models/todo.dart';
 import 'package:todoflutterapp/src/models/result.dart';
 import 'package:todoflutterapp/src/utils/util.dart';
 
